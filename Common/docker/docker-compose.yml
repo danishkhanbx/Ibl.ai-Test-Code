@@ -1,0 +1,34 @@
+version: '3'
+services:
+  django:
+    build: 
+      context: ../../Web/backend/django_rest_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../../Web/backend/django_rest_api:/app
+    environment:
+      - DEBUG=1
+    command: python manage.py runserver 0.0.0.0:8000
+
+  langflow:
+    image: logspace/langflow:latest
+    ports:
+      - "7860:7860"
+    volumes:
+      - ../langflow:/root/.langflow
+
+  llm:
+    build: 
+      context: ../llm
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../llm:/app
+
+  redis:
+    image: "redis:alpine"
+
+networks:
+  default:
+    driver: overlay
